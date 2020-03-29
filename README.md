@@ -331,9 +331,11 @@ Ejercicios de ampliación
     con los argumentos añadidos.
 
 `MENSAJE DE AYUDA:`
+
 <img src="img/docopt.png" width="640" align="center">
 
 `SCRIPT MODIFICADO:`
+
 <img src="img/script.png" width="640" align="center">
 
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de detección

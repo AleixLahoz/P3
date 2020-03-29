@@ -37,7 +37,7 @@ Arguments:
 
 int main(int argc, const char *argv[])
 {
-  /// \TODO
+  /// \DONE
   ///  Modify the program syntax and the call to **docopt()** in order to
   ///  add options and arguments to the program.
   std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
