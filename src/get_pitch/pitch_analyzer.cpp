@@ -72,11 +72,11 @@ bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const
   /// * You can use the standard features (pot, r1norm, rmaxnorm),
   ///   or compute and use other ones.
 
-  //const float r1 = 0.70;
-  //const float rmax = 0.3;
-  //const float pot = -50.5;
+  //const float r1 = 0.70 (th1); 
+  //const float rmax = 0.3 (th2);
+  //const float pot = -50.5 (thPot);
 
-  if (pot < -50.5 || r1norm < 0.70 || rmaxnorm < 0.3 || (r1norm < 0.935 && rmaxnorm < 0.4))
+  if (pot < thPot || r1norm < th1 || rmaxnorm < th2 || (r1norm < 0.935 && rmaxnorm < 0.4))
   {
     return true; //Unvoiced Sound
   }

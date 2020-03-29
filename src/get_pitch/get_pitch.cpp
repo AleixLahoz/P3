@@ -20,7 +20,7 @@ static const char USAGE[] = R"(
 get_pitch - Pitch Detector 
 
 Usage:
-    get_pitch [options] <input-wav> <output-txt>
+    get_pitch [options] <input-wav> <output-txt> [<th1>] [<th2>] [<thPot>]
     get_pitch (-h | --help)
     get_pitch --version
 
@@ -48,6 +48,41 @@ int main(int argc, const char *argv[])
   std::string input_wav = args["<input-wav>"].asString();
   std::string output_txt = args["<output-txt>"].asString();
 
+  int numArgs = argc - 3;
+  float th1;
+  float th2;
+  float thPot;
+
+  if (numArgs > 0)
+  {
+    th1 = stof(args["<th1>"].asString());
+    numArgs--;
+  }
+  else
+  {
+    th1 = 0.7;
+  }
+
+  if (numArgs > 0)
+  {
+    th2 = stof(args["<th2>"].asString());
+    numArgs--;
+  }
+  else
+  {
+    th2 = 0.3;
+  }
+
+  if (numArgs > 0)
+  {
+    thPot = -1.0 * stof(args["<thPot>"].asString());
+    numArgs--;
+  }
+  else
+  {
+    thPot = -50.5;
+  }
+
   // Read input sound file
   unsigned int rate;
   vector<float> x;
@@ -61,51 +96,22 @@ int main(int argc, const char *argv[])
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, th1, th2, thPot, PitchAnalyzer::HAMMING, 50, 500);
 
   /// \DONE
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
 
   //  Cálculo del Threshold CL para el center-clipping
-  float firstMax = 0.0;
-  float lastMax = 0.0;
   float CL = 0.0;
   float potencia = 0.0;
-
-  /*for (unsigned int i = 0; i < x.size(); i++)
-  {
-    if (i < (unsigned int)(x.size() / 3))
-    {
-      if (abs(x[i]) > firstMax)
-      {
-        firstMax = abs(x[i]);
-      }
-    }
-    if (i > (unsigned int)(2 * x.size() / 3))
-    {
-      if (abs(x[i])> lastMax)
-      {
-        lastMax = abs(x[i]);
-      }
-    }
-  }
-
-  if (firstMax > lastMax)
-  {
-    CL = 0.7 * lastMax;
-  }
-  else
-  {
-    CL = 0.7 * firstMax;
-  }*/
 
   for (unsigned int i = 0; i < x.size(); i++)
   {
     potencia += abs(x[i]) * abs(x[i]);
   }
   potencia = (1.0F / x.size()) * potencia;
-  
+
   CL = 0.8 * potencia;
 
   //  Aplicamos el Center Clipping
@@ -151,7 +157,7 @@ int main(int argc, const char *argv[])
     for (unsigned int p = 0; p < mida_finestra; ++p)
     { //algoritme d'ordenacio
       int min = p;
-      for (int k = p + 1; k < mida_finestra; k++)
+      for (unsigned int k = p + 1; k < mida_finestra; k++)
       {
         if (finestra[min] > finestra[k])
         {
